@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteka Spokojna – Katalog Książek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       ZMIENNE – spokojny, pastelowy zestaw barw
+    ============================================================ */
+    :root {
+      --bg:        #F5F3EE;
+      --surface:   #FDFBF7;
+      --border:    #DDD8CF;
+      --text:      #2D2926;
+      --text-muted:#6B6560;
+      --accent:    #4A7C59;   /* cichy zielony */
+      --accent-lt: #E8F0EB;
+      --focus:     #2563EB;
+      --radius:    8px;
+    }
+
+    /* ============================================================
+       RESET / BAZA
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.0625rem;   /* 17 px – wygodne do czytania */
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* ============================================================
+       SKIP LINK – dostępność klawiatury
+    ============================================================ */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--accent);
+      color: #fff;
+      padding: .5rem 1rem;
+      font-weight: 600;
+      z-index: 9999;
+    }
+    .skip-link:focus { left: 0; }
+
+    /* ============================================================
+       NAGŁÓWEK
+    ============================================================ */
+    header {
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: 'Literata', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ============================================================
+       NAWIGACJA – przewidywalna, prosta
+    ============================================================ */
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 0;
+    }
+
+    nav a {
+      display: block;
+      padding: .5rem 1rem;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: var(--radius);
+      font-size: .95rem;
+      font-weight: 500;
+      transition: background .15s;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      background: var(--accent-lt);
+      color: var(--accent);
+      outline: none;
+    }
+
+    nav a[aria-current="page"] {
+      background: var(--accent-lt);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       FOKUS – wyraźny dla klawiaturowiczów
+    ============================================================ */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    /* ============================================================
+       GŁÓWNA TREŚĆ
+    ============================================================ */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ============================================================
+       SEKCJA HERO – bez animacji, bez elementów rozpraszających
+    ============================================================ */
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 2rem 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero h1 {
+      font-family: 'Literata', Georgia, serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text);
+      margin-bottom: .75rem;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      max-width: 54ch;
+    }
+
+    /* ============================================================
+       WYSZUKIWARKA
+    ============================================================ */
+    .search-row {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .search-row label {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+    }
+
+    .search-input {
+      flex: 1 1 240px;
+      padding: .625rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 1rem;
+      background: var(--surface);
+      color: var(--text);
+      transition: border-color .15s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .625rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .btn:hover { background: #3a6347; }
+
+    /* ============================================================
+       FILTRY / TAGI
+    ============================================================ */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-right: .25rem;
+    }
+
+    .tag-btn {
+      padding: .35rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+
+    .tag-btn:hover,
+    .tag-btn.active {
+      background: var(--accent-lt);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       LISTA KSIĄŻEK – grid o stałych rozmiarach
+    ============================================================ */
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .book-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      transition: box-shadow .15s;
+    }
+
+    .book-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    }
+
+    .book-tag {
+      display: inline-block;
+      padding: .2rem .6rem;
+      background: var(--accent-lt);
+      color: var(--accent);
+      border-radius: 4px;
+      font-size: .78rem;
+      font-weight: 500;
+      width: fit-content;
+    }
+
+    .book-title {
+      font-family: 'Literata', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .book-author {
+      font-size: .875rem;
+      color: var(--text-muted);
+    }
+
+    .book-desc {
+      font-size: .875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .book-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      margin-top: .5rem;
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .book-link:hover { text-decoration: underline; }
+
+    /* ============================================================
+       STOPKA
+    ============================================================ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: .85rem;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       BRAK ANIMACJI gdy użytkownik preferuje
+    ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SKIP LINK -->
+  <a href="#main-content" class="skip-link">Przejdź do treści</a>
+
+  <!-- NAGŁÓWEK -->
+  <header role="banner">
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="Biblioteka Spokojna – strona główna">📚 Biblioteka Spokojna</a>
+      <nav role="navigation" aria-label="Główna nawigacja">
+        <ul>
+          <li><a href="#" aria-current="page">Katalog</a></li>
+          <li><a href="#">Nowości</a></li>
+          <li><a href="#">Pomoc</a></li>
+          <li><a href="#">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TREŚĆ GŁÓWNA -->
+  <main id="main-content" tabindex="-1">
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Katalog biblioteki</h1>
+      <p>Znajdź książkę, którą chcesz przeczytać. Możesz szukać po tytule, autorze lub gatunku.</p>
+    </section>
+
+    <!-- WYSZUKIWARKA -->
+    <div class="search-row" role="search">
+      <label for="search-field">Szukaj książki</label>
+      <input
+        id="search-field"
+        class="search-input"
+        type="search"
+        placeholder="Wpisz tytuł lub autora…"
+        aria-label="Szukaj książki po tytule lub autorze"
+      >
+      <button class="btn" type="button">
+        <span aria-hidden="true">🔍</span> Szukaj
+      </button>
+    </div>
+
+    <!-- FILTRY -->
+    <div class="filter-bar" role="group" aria-label="Filtruj według gatunku">
+      <span class="filter-label">Gatunek:</span>
+      <button class="tag-btn active" aria-pressed="true">Wszystkie</button>
+      <button class="tag-btn" aria-pressed="false">Powieść</button>
+      <button class="tag-btn" aria-pressed="false">Biografia</button>
+      <button class="tag-btn" aria-pressed="false">Nauka</button>
+      <button class="tag-btn" aria-pressed="false">Historia</button>
+    </div>
+
+    <!-- LISTA KSIĄŻEK -->
+    <section aria-label="Lista książek">
+      <div class="book-grid">
+
+        <article class="book-card">
+          <span class="book-tag">Powieść</span>
+          <h2 class="book-title">Sto lat samotności</h2>
+          <p class="book-author">Gabriel García Márquez</p>
+          <p class="book-desc">Saga rodziny Buendía w fikcyjnym miasteczku Macondo. Klasyka realizmu magicznego.</p>
+          <a href="#" class="book-link" aria-label="Więcej o: Sto lat samotności">Czytaj więcej →</a>
+        </article>
+
+        <article class="book-card">
+          <span class="book-tag">Nauka</span>
+          <h2 class="book-title">Krótka historia czasu</h2>
+          <p class="book-author">Stephen Hawking</p>
+          <p class="book-desc">Przystępne wprowadzenie do kosmologii, czarnych dziur i struktury wszechświata.</p>
+          <a href="#" class="book-link" aria-label="Więcej o: Krótka historia czasu">Czytaj więcej →</a>
+        </article>
+
+        <article class="book-card">
+          <span class="book-tag">Biografia</span>
+          <h2 class="book-title">Maria Curie: Biografia</h2>
+          <p class="book-author">Susan Quinn</p>
+          <p class="book-desc">Szczegółowy portret życia i odkryć noblistki. Rzetelnie udokumentowana historia.</p>
+          <a href="#" class="book-link" aria-label="Więcej o: Maria Curie Biografia">Czytaj więcej →</a>
+        </article>
+
+        <article class="book-card">
+          <span class="book-tag">Historia</span>
+          <h2 class="book-title">Sapiens. Od zwierząt do bogów</h2>
+          <p class="book-author">Yuval Noah Harari</p>
+          <p class="book-desc">Panoramiczna historia ludzkości – od prehistorii do współczesności.</p>
+          <a href="#" class="book-link" aria-label="Więcej o: Sapiens">Czytaj więcej →</a>
+        </article>
+
+        <article class="book-card">
+          <span class="book-tag">Powieść</span>
+          <h2 class="book-title">Zbrodnia i kara</h2>
+          <p class="book-author">Fiodor Dostojewski</p>
+          <p class="book-desc">Psychologiczny portret studenta Raskolnikowa i konsekwencji jego czynów.</p>
+          <a href="#" class="book-link" aria-label="Więcej o: Zbrodnia i kara">Czytaj więcej →</a>
+        </article>
+
+        <article class="book-card">
+          <span class="book-tag">Nauka</span>
+          <h2 class="book-title">Mózg incognito</h2>
+          <p class="book-author">David Eagleman</p>
+          <p class="book-desc">Jak nieświadome procesy kształtują nasze myśli, decyzje i postrzeganie świata.</p>
+          <a href="#" class="book-link" aria-label="Więcej o: Mózg incognito">Czytaj więcej →</a>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STOPKA -->
+  <footer role="contentinfo">
+    <p>© 2025 Biblioteka Spokojna &nbsp;·&nbsp; Wszystkie informacje są aktualne &nbsp;·&nbsp; <a href="#">Polityka prywatności</a></p>
+  </footer>
+
+  <script>
+    // Filtry – prosta obsługa bez przeładowania strony
+    const tagBtns = document.querySelectorAll('.tag-btn');
+    tagBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tagBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed','true');
+      });
+    });
+  </script>
+
+</body>
+</html>

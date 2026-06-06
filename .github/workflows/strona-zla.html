@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SUPER MEGA SKLEP!!!!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       ZŁE PRAKTYKI: chaos kolorów, miganie, chaotyczny layout
+    ============================================================ */
+
+    @keyframes blink {
+      0%,49%{ opacity:1 } 50%,100%{ opacity:0 }
+    }
+    @keyframes shake {
+      0%,100%{ transform:translateX(0) } 25%{ transform:translateX(-8px) rotate(-2deg) } 75%{ transform:translateX(8px) rotate(2deg) }
+    }
+    @keyframes rainbow {
+      0%  { background-position:0% 50% }
+      50% { background-position:100% 50% }
+      100%{ background-position:0% 50% }
+    }
+    @keyframes spin {
+      from{ transform:rotate(0deg) } to{ transform:rotate(360deg) }
+    }
+    @keyframes marquee {
+      from{ transform:translateX(100%) } to{ transform:translateX(-100%) }
+    }
+    @keyframes pop {
+      0%,100%{ transform:scale(1) } 50%{ transform:scale(1.4) }
+    }
+    @keyframes colorshift {
+      0%{color:#ff0000} 16%{color:#ff8800} 33%{color:#ffff00} 50%{color:#00ff00} 66%{color:#0000ff} 83%{color:#ff00ff} 100%{color:#ff0000}
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: repeating-linear-gradient(
+        45deg,
+        #ff00ff,
+        #ff00ff 10px,
+        #ffff00 10px,
+        #ffff00 20px
+      );
+      font-family: 'Comic Neue', cursive;
+      overflow-x: hidden;
+      cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">🎉</text></svg>') 0 0, auto;
+    }
+
+    /* PASEK TĘCZOWY MIGAJĄCY */
+    header {
+      background: linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+      background-size: 400% 400%;
+      animation: rainbow 1s linear infinite;
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+
+    header h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 3rem;
+      color: #000;
+      text-shadow: 4px 4px 0 #fff, -4px -4px 0 #ff00ff, 8px 0 0 #00ffff;
+      animation: shake 0.3s infinite;
+      display: inline-block;
+    }
+
+    /* NAWIGACJA – losowe miejsca, nieodgadnięta kolejność */
+    nav {
+      position: fixed;
+      top: 80px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 9999;
+      transform: rotate(-8deg);
+    }
+
+    nav a {
+      display: block;
+      padding: 5px 8px;
+      font-size: 0.65rem;
+      color: #ff00ff;
+      background: #000080;
+      text-decoration: none;
+      border: 3px dashed #ffff00;
+      animation: blink 0.5s infinite;
+    }
+
+    nav a:nth-child(2){ background:#800000; animation-delay:.15s; }
+    nav a:nth-child(3){ background:#008000; animation-delay:.3s; }
+    nav a:nth-child(4){ background:#ff6600; animation-delay:.45s; }
+
+    /* MARQUEE Z KOMUNIKATEM */
+    .marquee-bar {
+      background: #000;
+      color: #00ff00;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-inner {
+      display: inline-block;
+      animation: marquee 5s linear infinite;
+      letter-spacing: 0.15em;
+    }
+
+    /* POPUP KTÓRY ZASŁANIA TREŚĆ */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ff0000;
+      border: 8px solid #ffff00;
+      padding: 20px;
+      z-index: 99999;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,.5);
+      font-size: 0.9rem;
+    }
+
+    .popup h2 {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.6rem;
+      color: #ffff00;
+      animation: blink .4s infinite;
+      margin-bottom: 10px;
+    }
+
+    .popup p { color: #fff; font-size: 0.75rem; line-height: 1.3; margin-bottom: 10px; }
+
+    .popup-close {
+      background: #00ff00;
+      color: #ff0000;
+      font-weight: bold;
+      font-size: 0.7rem;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      margin-top: 6px;
+      /* Mały, trudny do kliknięcia przycisk "zamknij" – schowany na dole */
+      display: block;
+      margin-left: auto;
+      margin-right: 0;
+    }
+
+    /* GŁÓWNA TREŚĆ – chaotyczny layout */
+    .content-area {
+      display: grid;
+      grid-template-columns: 180px 1fr 160px;
+      gap: 0;
+      padding: 10px;
+    }
+
+    /* SIDEBAR LEWY – za mała czcionka, mało kontrastu */
+    .sidebar-left {
+      background: #cccccc;
+      color: #bbbbbb; /* prawie niewidoczny tekst */
+      padding: 8px;
+      font-size: 0.6rem;
+    }
+
+    .sidebar-left h3 { font-size: 0.65rem; color: #aaaaaa; }
+
+    /* ŚRODEK – chaotyczne bloki */
+    .main-col {
+      background: #ffffcc;
+      padding: 10px;
+      position: relative;
+    }
+
+    .floating-gif {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 2.5rem;
+      animation: spin 0.5s linear infinite;
+      pointer-events: none;
+    }
+
+    .section-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 2rem;
+      animation: colorshift 0.5s linear infinite;
+      text-shadow: 2px 2px #000;
+      margin-bottom: 5px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .product-card {
+      background: #ff00ff;
+      border: 3px solid #00ffff;
+      padding: 6px;
+      text-align: center;
+      font-size: 0.65rem;
+      color: #ffff00;
+    }
+
+    .product-card:nth-child(2) { background:#00ffff; color:#ff00ff; transform:rotate(3deg); }
+    .product-card:nth-child(3) { background:#ffff00; color:#ff0000; transform:rotate(-2deg); }
+    .product-card:nth-child(4) { background:#00ff00; color:#ff00ff; transform:rotate(5deg); }
+
+    .product-card .price {
+      font-size: 1.4rem;
+      font-weight: bold;
+      animation: pop 0.6s infinite;
+      display: inline-block;
+      color: #000;
+    }
+
+    /* Przycisk – nieodróżnialny od tła */
+    .product-card button {
+      background: #ff00ff;
+      color: #ff00aa;
+      border: 1px solid #ff00ee;
+      font-size: 0.55rem;
+      cursor: pointer;
+      padding: 2px 4px;
+      margin-top: 4px;
+    }
+
+    /* WALL OF TEXT – bez odstępów, trudne do czytania */
+    .wall-of-text {
+      background: #000080;
+      color: #ff0000;
+      padding: 8px;
+      font-size: 0.65rem;
+      line-height: 1.1;
+      margin-top: 8px;
+      font-family: 'Comic Neue', cursive;
+      letter-spacing: -0.05em;
+    }
+
+    /* SIDEBAR PRAWY – autoplay video placeholder + reklamy */
+    .sidebar-right {
+      background: #ff6600;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ad-box {
+      background: repeating-linear-gradient(0deg,#ff0000,#ff0000 4px,#0000ff 4px,#0000ff 8px);
+      color: #ffff00;
+      font-size: 0.6rem;
+      padding: 6px;
+      text-align: center;
+      animation: blink 0.3s infinite;
+      border: 2px solid #fff;
+    }
+
+    .ad-box strong { font-size: 1rem; animation: colorshift .4s infinite; display:block; }
+
+    /* STOPKA – brak kontrastu */
+    footer {
+      background: #888888;
+      color: #999999;
+      font-size: 0.5rem;
+      padding: 4px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* FLOATING CORNER ELEMENTS */
+    .corner-spinner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-size: 3rem;
+      animation: spin 0.4s linear infinite;
+      z-index: 9998;
+      pointer-events: none;
+    }
+
+    .corner-blink {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ff0000;
+      color: #ffff00;
+      font-size: 0.8rem;
+      padding: 8px;
+      animation: blink 0.25s infinite;
+      z-index: 9998;
+      font-weight: bold;
+    }
+
+    /* POWIADOMIENIE PO 2 SEK – dodatkowy chaos */
+    .notification {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #ff0000;
+      color: #fff;
+      padding: 10px;
+      font-size: 0.75rem;
+      z-index: 99998;
+      border: 3px solid #ffff00;
+      animation: shake .2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- POPUP BLOKUJĄCY TREŚĆ -->
+  <div class="popup" id="popup" role="none" aria-hidden="true">
+    <h2>CZEKAJ!!!! 🎉🎉🎉</h2>
+    <p>ZAPISZ SIĘ NA NEWSLETTER I WYGRAJ SUPER NAGRODĘ!!!! PODAJ EMAIL I NUMER TELEFONU I DATĘ URODZIN I ADRES I KOLOR ULUBIONY I PIES CZY KOT!!!! NIE PRZEGAP TEJ OKAZJI KTÓRA KOŃCZY SIĘ ZA 99 SEKUND!!!!</p>
+    <input type="text" placeholder="twój email..." style="width:100%;font-size:0.65rem;padding:3px;">
+    <!-- Przycisk zamknij jest celowo trudny do znalezienia i mały -->
+    <button class="popup-close" onclick="document.getElementById('popup').style.display='none'">x</button>
+  </div>
+
+  <!-- MIGAJĄCY NAGŁÓWEK -->
+  <header>
+    <h1>🌟 SUPER MEGA SKLEP ONLINE!!! 🌟</h1>
+  </header>
+
+  <!-- PASEK MARQUEE -->
+  <div class="marquee-bar" aria-hidden="true">
+    <span class="marquee-inner">
+      🔥 PROMOCJA!!! KLIKNIJ TERAZ!!! NIE CZEKAJ!!! TYLKO DZIŚ!!! -99%!!! OSTATNIE SZTUKI!!! KLIKNIJ TUTAJ!!! 🔥 PROMOCJA!!! KLIKNIJ TERAZ!!!
+    </span>
+  </div>
+
+  <!-- UKRYTA NAWIGACJA FIXED PO PRAWEJ -->
+  <nav>
+    <a href="#">Strona gł.</a>
+    <a href="#">????</a>
+    <a href="#">Kontakt</a>
+    <a href="#">Coś tam</a>
+  </nav>
+
+  <!-- GŁÓWNA TREŚĆ -->
+  <div class="content-area">
+
+    <!-- SIDEBAR LEWY – nieczytelny -->
+    <aside class="sidebar-left">
+      <h3>Kategorie produktów:</h3>
+      <p>wszystkieproduktyelektronikagadzety​ubraniaksiążkizabawkimeblemotorycykleterenyogrodowe​narzędziakuchniałazienkabadmintonpiłkasiatkówkaspa</p>
+      <br>
+      <p>Regulamin.Polityka.Informacje.Pliki.Cookies.Warunki.Umowy.Prawne.Informacje.Ważne.</p>
+    </aside>
+
+    <!-- ŚRODKOWA KOLUMNA -->
+    <main>
+      <div class="floating-gif" aria-hidden="true">⚙️</div>
+
+      <div class="section-title">NASZE PRODUKTY!!!!</div>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <div>Produkt A Super Ekstra Mega Fajny</div>
+          <div class="price">99zł</div>
+          <!-- Przycisk o tej samej barwie co tło – niewidoczny -->
+          <button>dodaj</button>
+        </div>
+        <div class="product-card">
+          <div>Produkt B Niesamowity!</div>
+          <div class="price">49zł</div>
+          <button style="background:#00eeee;color:#00dddd;border-color:#00eeee;">kup</button>
+        </div>
+        <div class="product-card">
+          <div>C OKAZJA!!!</div>
+          <div class="price">199zł</div>
+          <button style="background:#ffee00;color:#ffdd00;">zamów</button>
+        </div>
+        <div class="product-card">
+          <div>D ostatnia sztuka klucze do auta</div>
+          <div class="price">1zł</div>
+          <button>!</button>
+        </div>
+      </div>
+
+      <!-- ŚCIANA TEKSTU -->
+      <div class="wall-of-text">
+        WitajwNaszymSuperMegaSklepieOnlinegdziemożeszkupićwszystkocozechceszipotrzebujeszijeszczewięcejnasząofertęstanowiszerokiwyborproduktówelektronicznychodzieżowychspożywczychogrodowychbudowlanychikosmetycznychzachęcamydozapoznaniasięznaszympełnymkatalogiemdostępnymonlinepodadresemwwwsupermegas​kleppllubtakżewnasze​jsiedzibieprzy​ulicyNieznanej1wWarszawiegodzinyotwarciasąodponiedziałkudoniedzielioddogodziny23czasemkrócej.RegulaminSklepuZabraniasięKopiowaniaJakichkolwiekTreściZesttronysklep.
+      </div>
+
+      <!-- DODATKOWE MIGAJĄCE BANNERY -->
+      <div style="margin-top:8px; display:flex; gap:5px; flex-wrap:wrap;">
+        <div style="background:#ff0000;color:#00ff00;font-size:0.65rem;padding:6px;animation:blink 0.2s infinite;border:2px solid #ffff00;">
+          ⚠️ TWOJE KONTO ZOSTANIE USUNIĘTE ZA 24H ⚠️
+        </div>
+        <div style="background:#0000ff;color:#ff0000;font-size:0.6rem;padding:6px;animation:shake 0.2s infinite;">
+          GRATULACJE WYGRAŁEŚ IPHONE'A!!!! KLIKNIJ NATYCHMIAST
+        </div>
+        <div style="background:#ffff00;color:#ff00ff;font-size:0.55rem;padding:6px;animation:colorshift 0.3s infinite;font-weight:bold;">
+          Hej! Uwaga! Patrz tutaj! Kliknij! Nie ignoruj! Ważne! Super! Wow!
+        </div>
+      </div>
+    </main>
+
+    <!-- SIDEBAR PRAWY – migające reklamy -->
+    <aside class="sidebar-right">
+      <div class="ad-box">
+        <strong>REKLAMA</strong>
+        KLIKNIJ TU JUŻ TERAZ SUPER OFERTA TYLKO DLA CIEBIE NIE PRZEGAP 0 DNI 0 GODZIN 0 MINUT!!!
+      </div>
+      <div class="ad-box" style="animation-delay:.15s">
+        <strong>💰</strong>
+        ZARÓB 9999 ZŁ W DOMU KLIKAJĄC MYSZĄ SPRAWDZONA METODA
+      </div>
+      <div class="ad-box" style="animation-delay:.3s;">
+        <strong>🏆</strong>
+        TY JESTEŚ NASZYM MILIONOWYM UŻYTKOWNIKIEM KLIKNIJ ABY ODEBRAĆ NAGRODĘ
+      </div>
+
+      <!-- Autoplay audio (symulacja) -->
+      <div style="background:#ff00ff;color:#00ff00;font-size:0.55rem;padding:4px;border:1px solid #fff;text-align:center;">
+        🔊 [AUTOMATYCZNIE ODTWARZANA MUZYKA W TLE 🎵🎵🎵 NIE MOŻESZ WYCISZYĆ]
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- STOPKA – niewidoczna -->
+  <footer>
+    RegulaminPolitykaPrywatnościCookiesPomocKontaktPrawoAutorskieWszystkiePrawa​Zastrzeżone2025SuperMegaSklep.©®™Zarejestrowanywsądziegospodarczym.NIE PONOSIMY ODPOWIEDZIALNOŚCI ZA NIC I WSZYSTKO JEST TWOJA WINA.kontakt@sklep.pl tel:+48000000000 fax:+48000000001 adres:ul.Nieznana1,00-000Warszawa,Polska.
+  </footer>
+
+  <!-- ELEMENTY PŁYWAJĄCE -->
+  <div class="corner-spinner" aria-hidden="true">🌀</div>
+  <div class="corner-blink" aria-hidden="true">KLIKNIJ MNIE!!!</div>
+
+  <!-- POWIADOMIENIE PO 2 SEK -->
+  <div class="notification" id="notif">
+    🔔 Masz 47 nowych wiadomości! Twoja sesja wygasa! Aktualizuj teraz!
+  </div>
+
+  <script>
+    // Powiadomienie po 2 sekundach
+    setTimeout(() => {
+      const n = document.getElementById('notif');
+      n.style.display = 'block';
+      setTimeout(() => { n.style.display = 'none'; }, 3000);
+    }, 2000);
+
+    // Filtry – losowe przesunięcia po kliknięciu (dezorientacja)
+    document.querySelectorAll('.product-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const r = (Math.random() - 0.5) * 20;
+        card.style.transform = `rotate(${r}deg) scale(1.1)`;
+        setTimeout(() => { card.style.transform = ''; }, 500);
+      });
+    });
+  </script>
+
+  <!-- AUTOPLAY AUDIO – zasymulowane przez alert po 3 sekundach -->
+  <!-- W prawdziwej implementacji byłoby <audio autoplay loop> -->
+
+</body>
+</html>
